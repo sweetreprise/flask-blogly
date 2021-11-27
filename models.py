@@ -42,7 +42,7 @@ class User(db.Model):
     )
 
 class Post(db.Model):
-    """class for a user's post: includes title, content and time created"""
+    """Post class: includes title, content and time created"""
 
     __tablename__ = "posts"
 
@@ -74,3 +74,43 @@ class Post(db.Model):
     )
 
     user = db.relationship('User', backref='posts')
+
+class Tag(db.Model):
+    """Tag class: includes id and name (unique)"""
+
+    __tablename__ = "tags"
+
+    id = db.Column(
+        db.Integer,
+        primary_key = True,
+        autoincrement = True
+    )
+
+    name = db.Column(
+        db.String(15),
+        nullable = False,
+        unique = True
+    )
+
+    posts = db.relationship(
+        'Post',
+        secondary="posts_tags",
+        backref="tags"
+    )
+
+class PostTag(db.Model):
+    """PostTag class: includes post_id and tag_id"""
+
+    __tablename__ = "posts_tags"
+
+    post_id = db.Column(
+        db.Integer,
+        db.ForeignKey("posts.id"),
+        primary_key = True
+    )
+
+    tag_id = db.Column(
+        db.Integer,
+        db.ForeignKey("tags.id"),
+        primary_key = True
+    )
